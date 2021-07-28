@@ -23,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
+import static org.openimis.imisclaims.BuildConfig.API_BASE_URL;
 
 public class MainActivity extends ImisActivity {
     ArrayList<String> broadcastList;
@@ -309,6 +311,7 @@ public class MainActivity extends ImisActivity {
     }
 
     public void ClaimAdminDialogBox() {
+        Log.i("HTTP_CHECK", API_BASE_URL);
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.claim_code_dialog, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -520,7 +523,9 @@ public class MainActivity extends ImisActivity {
     }
 
     public boolean getClaimAdmins() {
+        Log.i("HTTP_CHECK", "let's check");
         if (global.isNetworkAvailable()) {
+            Log.i("HTTP_CHECK", "it is available");
             String progress_message = getResources().getString(R.string.application);
             pd = ProgressDialog.show(this, getResources().getString(R.string.initializing), progress_message);
             Thread thread = new Thread() {
@@ -529,7 +534,9 @@ public class MainActivity extends ImisActivity {
 
                     String functionName = "claim/Claims/GetClaimAdmins";
                     try {
+                        Log.i("HTTP_CHECK", functionName);
                         String content = toRestApi.getFromRestApi(functionName);
+                        Log.i("HTTP_CHECK", "got size: " + content.length());
 
                         JSONObject ob;
 
@@ -545,6 +552,7 @@ public class MainActivity extends ImisActivity {
                             String lastName = objControls.getString("lastName");
                             String otherNames = objControls.getString("otherNames");
                             String name = lastName + " " + otherNames;
+                            Log.i("HTTP_CHECK", "adding " + name);
                             sql.InsertClaimAdmins(objControls.getString("claimAdminCode"), name);
                         }
 
